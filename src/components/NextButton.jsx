@@ -1,14 +1,11 @@
-import React from "react";
+import { useQuiz } from "../context/QuizContext";
 
-const NextButton = ({ dispatch, answer, index, numQuestions }) => {
+const NextButton = ({ numQuestions }) => {
+  const { nextQuestion, finishQuiz, answer, index } = useQuiz();
   if (answer === null) return null;
 
   const handleClick = () => {
-    const action =
-      index < numQuestions - 1
-        ? { type: "nextQuestion" }
-        : { type: "finishQuiz" };
-    dispatch(action);
+    index < numQuestions - 1 ? nextQuestion() : finishQuiz();
   };
 
   return (

@@ -86,10 +86,16 @@ function App() {
   );
 
   useEffect(() => {
-    fetch("http://localhost:8000/questions")
-      .then((res) => res.json())
-      .then((data) => dispatch({ type: "dataReceived", payload: data }))
-      .catch((err) => dispatch({ type: "dataFailed", payload: err }));
+    async function fetchQuestions() {
+      try {
+        const res = await fetch("http://localhost:8000/questions");
+        const data = await res.json();
+        dispatch({ type: "dataReceived", payload: data });
+      } catch (err) {
+        dispatch({ type: "dataFailed", payload: err });
+      }
+    }
+    fetchQuestions();
   }, []);
 
   return (
@@ -106,10 +112,10 @@ function App() {
           <>
             <Progress
               index={index}
-              numQuestions={numOfQuestions}
               points={points}
-              maxPossiblePoints={maxPossiblePoints}
               answer={answer}
+              numQuestions={numOfQuestions}
+              maxPossiblePoints={maxPossiblePoints}
             />
             <Question
               question={questions[index]}
@@ -118,12 +124,7 @@ function App() {
             />
             <Footer>
               <Timer dispatch={dispatch} secondsRemaining={secondsRemaining} />
-              <NextButton
-                dispatch={dispatch}
-                answer={answer}
-                index={index}
-                numQuestions={numOfQuestions}
-              ></NextButton>
+              <NextButton numQuestions={numOfQuestions}></NextButton>
             </Footer>
           </>
         )}
