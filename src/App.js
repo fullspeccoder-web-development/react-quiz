@@ -10,6 +10,7 @@ import Footer from "./components/Footer";
 import Timer from "./components/Timer";
 import NextButton from "./components/NextButton";
 import FinishedScreen from "./components/FinishedScreen";
+import originalQuestions from "./data/questions.json";
 
 const SECS_PER_QUESTION = 30;
 
@@ -86,10 +87,22 @@ function App() {
   );
 
   useEffect(() => {
-    fetch("http://localhost:8000/questions")
-      .then((res) => res.json())
-      .then((data) => dispatch({ type: "dataReceived", payload: data }))
-      .catch((err) => dispatch({ type: "dataFailed", payload: err }));
+    async function getQuestions() {
+      // fetch("http://localhost:8000/questions")
+      //   .then((res) => res.json())
+      //   .then((data) => dispatch({ type: "dataReceived", payload: data }))
+      //   .catch((err) => dispatch({ type: "dataFailed", payload: err }));
+      new Promise((resolve, reject) => {
+        setTimeout(() => {
+          resolve(originalQuestions);
+        }, 2000);
+      })
+        .then((res) =>
+          dispatch({ type: "dataReceived", payload: res.questions })
+        )
+        .catch((err) => dispatch({ type: "dataFailed", payload: err }));
+    }
+    getQuestions();
   }, []);
 
   return (
